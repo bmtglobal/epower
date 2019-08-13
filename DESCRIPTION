@@ -1,0 +1,26 @@
+Package: epower
+Title: Power analysis for beyond BACI sampling designs
+Version: 1.3
+Authors@R: c(person("Rebecca", "Fisher", email = "r.fisher@aims.gov.au", role = c("aut", "cre")),person("Glenn","Shiell",role="aut"),person("Rohan","Sadler",role="aut"),person("James","McGree",role="aut"))
+Description: epower conducts a power analysis on beyond BACI sampling
+    designs through INLA based inference and Monte Carlo simulation. Currently
+    epower considers only univariate responses. The analysis allows for cross
+    random effects between \code{Time} and \code{Site} in the design. The
+    epower toolbox has been designed for use by ecologists with a sound
+    understanding of the statistical principles of BACI designs. To assist the
+    non-R user, BACI parameters are defined in an excel workbook template. The template 
+    epower_interface_V1.3.xlsx should have been supplied with
+    the package tar.gz file.
+Depends:
+    R (>= 3.3.2)
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports: foreach,
+    doParallel,
+    XLConnect,
+    INLA,
+    doBy
+Suggests: R.rsp
+VignetteBuilder: R.rsp
