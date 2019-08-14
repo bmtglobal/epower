@@ -44,7 +44,7 @@
 #' other programs which are subsequently sold or used for commercial purposes.
 #' Users are asked to please include the following citation text:
 #' Analyses were carried out using the software epower V1.3 (BMT 2019)
-#' as described in Fisher et al (2018) and (BMT 2019), based on the
+#' as described in Fisher et al (2019) and (BMT 2019), based on the
 #' statistical programming platform R (R-Core Team, 2019).
 
 #' Acknowledgements:
@@ -96,6 +96,9 @@
 #'
 NULL
 # building options
+.onAttach <- function(libname, pkgname) {
+packageStartupMessage("Welcome to my package")
+}
 ## library(roxygen2)
 ## setwd("/home/rohan/workspace/POWER TOOLBOX V1.1")
 # package.skeleton("epower",code_files=c("Toolbox_run.r"),force=TRUE)
