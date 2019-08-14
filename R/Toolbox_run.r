@@ -96,9 +96,6 @@
 #'
 NULL
 # building options
-.onAttach <- function(libname, pkgname) {
-packageStartupMessage("Welcome to my package")
-}
 ## library(roxygen2)
 ## setwd("/home/rohan/workspace/POWER TOOLBOX V1.1")
 # package.skeleton("epower",code_files=c("Toolbox_run.r"),force=TRUE)

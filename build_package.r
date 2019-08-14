@@ -20,7 +20,9 @@ library(R.rsp)
 setwd("C:/Users/rfisher/OneDrive - Australian Institute of Marine Science/Documents/AIMS/EcologicalRiskModelling/EPower/epower")
 
 devtools::document()
-
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("Welcome to my package")
+}
 use_package("doParallel")
 use_package("XLConnect")
 use_package("INLA")
