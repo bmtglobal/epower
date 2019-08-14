@@ -43,10 +43,6 @@ BACI designs. To assist the non-R user, BACI parameters and pilot data are
 defined in an Excel workbook. The template epower_interface_V1.3.xlsx should
 have been supplied with the package tar.gz file.
 
-For all other questions with regard to operating this
-package, please refer to the manual:
-vignette("epower_ManualV1.3")
-
 To run the program, simply adjust your BACI design
 in a copy of epower_interface_V1.3.xlsx, load the
 package and then call the function fitData(), which extracts the relevant information
@@ -57,14 +53,15 @@ and calling power Scenario manually before running assessPower().
 The epower (V1.3) package is a BMT product which has been developed in
 collaboration with the Australian Institute of Marine Science (AIMS),
 Queensland University of Technology (QUT) and Pink Lake Analytics.
-The method/code supporting epower v1.3 is described in Fisher R et al (in review).
+The method/code supporting epower v1.3 is described in Fisher R et al. (2019, Methods in Ecology and Evolution).
+Detailed instructions for operating the package can be found in the user manual (BMT 2019), available as Appendix 1 (Fisher et al 2019), or from BMTglobal.
 epower is freely available to users under licence.
 The licence explicitly precludes the incorporation of the epower code into
 other programs which are subsequently sold or used for commercial purposes.
 Users are asked to please include the following citation text:
-Analyses were carried out using the software epower V1.3 (BMT 2018)
-as described in Fisher et al (2018) and (BMT 2018), based on the
-statistical programming platform R (R-Core Team, 2018).
+Analyses were carried out using the software epower V1.3 (BMT 2019)
+as described in Fisher et al (2018) and (BMT 2019), based on the
+statistical programming platform R (R-Core Team, 2019).
 Acknowledgements:
 
 BMT funded the development

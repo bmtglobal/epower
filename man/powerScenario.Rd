@@ -39,7 +39,7 @@ for Monte Carlo simulation if required and desired effect sizes.
 scenarioParams<-powerScenario()
 }
 \references{
-Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 }
 \author{
 Rebecca Fisher \email{r.fisher@aims.gov.au}
