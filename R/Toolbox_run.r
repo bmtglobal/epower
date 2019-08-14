@@ -184,7 +184,7 @@ NULL
 #' and a pdf showing the histogram of PIT values obtained
 #' from the INLA fit.
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' install.packages("epower",dependencies=TRUE)
@@ -307,7 +307,7 @@ fitData<-function(
 #' simulated scenario data and simulation results exported as a .csv file
 #' labelled with the string: ...scenario_power_summary.csv
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' install.packages("epower",dependencies=TRUE)
@@ -368,7 +368,7 @@ assessPower<-function(){
 #' @export
 #' @return A list of design specification parameters
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' dataComponents<-designFactors()
@@ -513,7 +513,7 @@ designFactors<-function(toolbox.interface.file=excelInFile) {
 #' random structure of the design specified.
 #'
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' scenarioParams<-powerScenario()
@@ -787,7 +787,7 @@ powerScenario<-function(inputData=dataComponents){
 #' scenario having as many as required by the number of iterations. Also returns
 #' a list of the simulated datasets used in testing.
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' #scenarioRun<-run.scenario(scenario.matrix[2,], scenarioParams)
@@ -1202,7 +1202,7 @@ run.scenario<-function(x,scenario=scenarioParams){
 #' @return
 #' A simple matrix of scenarios is built
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' scenario.matrix<-buildScenarioMatrix(params=scenarioParams)
@@ -1311,7 +1311,7 @@ calcCost<-function(x){
 #' Evaluate Power of Design.
 #'  Supports costPowerOptimise which is in Beta and not currently implemented
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' excelInFile<-"epower_interface_V1.3.xlsx"
@@ -1626,7 +1626,7 @@ xformEta<-function(x,variableType,direction){
 #' @export
 #' @return A dataComponents list containing all the information required to run powerScenario.
 #' @references
-#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (in review) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution
+#' Fisher R, Shiell GR, Sadler RJ, Inostroza K, Shedrawi G, Holmes TH, McGree JM (2019) epower: an R package for power analysis of Before-After-Control-Impact (BACI) designs. Methods in Ecology and Evolution.
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 
 supplyData <- function(dat,
