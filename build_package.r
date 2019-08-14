@@ -13,9 +13,6 @@ library(roxygen2)
 library(knitr)
 library(R.rsp)
 
-.onLoad <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to my package")
-}
 
 # -----------------------
 #  build documents for the package
