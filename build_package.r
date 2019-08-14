@@ -13,6 +13,9 @@ library(roxygen2)
 library(knitr)
 library(R.rsp)
 
+.onLoad <- function(libname, pkgname) {
+  packageStartupMessage("Welcome to my package")
+}
 
 # -----------------------
 #  build documents for the package
@@ -20,9 +23,7 @@ library(R.rsp)
 setwd("C:/Users/rfisher/OneDrive - Australian Institute of Marine Science/Documents/AIMS/EcologicalRiskModelling/EPower/epower")
 
 devtools::document()
-.onLoad <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to my package")
-}
+
 use_package("doParallel")
 use_package("XLConnect")
 use_package("INLA")
