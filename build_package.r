@@ -20,7 +20,7 @@ library(R.rsp)
 setwd("C:/Users/rfisher/OneDrive - Australian Institute of Marine Science/Documents/AIMS/EcologicalRiskModelling/EPower/epower")
 
 devtools::document()
-.onAttach <- function(libname, pkgname) {
+.onLoad <- function(libname, pkgname) {
   packageStartupMessage("Welcome to my package")
 }
 use_package("doParallel")
