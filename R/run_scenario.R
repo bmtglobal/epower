@@ -33,7 +33,7 @@
 run.scenario<-function(x,scenario=scenarioParams){
 	#scenario.matrix - a matrix of scenario specifications to be run
 	#tests - a character vector indicating the statistical tests to be applied
-    dat<-scenario$dat
+  dat<-scenario$dat
 	effect.type<-scenario$effect.type
 	mod1.formula.use<-scenario$mod1.formula.use
 	variableType<-scenario$variableType
@@ -228,6 +228,7 @@ run.scenario<-function(x,scenario=scenarioParams){
   sim.dat$sublocation.unique=as.character(sim.dat$sublocation.unique)
   sim.dat$Location.unique=as.character(sim.dat$Location.unique)
 
+
   sim.dat.list=list()
   for(n in 1:scenario$n.its){
     # subsamples locations and sublocations for each iteration
@@ -254,7 +255,7 @@ run.scenario<-function(x,scenario=scenarioParams){
     # if the number of existing impact locations is more than the number required subsample
     if(length(dat.sublocations.impact)>locations.impact.i){
       dat.sublocations.impact=sample(dat.sublocations.impact,locations.impact.i)}
-       for(h in 1:length(dat.sublocations.impact)){
+    for(h in 1:length(dat.sublocations.impact)){
          index.h=which(sim.dat.use$Location.unique==names(sim.dat.sublocations.impact)[h])
          sim.dat.use$Location.unique[index.h]=names(dat.sublocations.impact)[h]
          random.deviations$Location.unique[index.h,n]=
@@ -266,15 +267,17 @@ run.scenario<-function(x,scenario=scenarioParams){
          for(l in 1:length(sublocations.h)){
              index.l=which(sim.dat.use$sublocation.unique==sim.dat.sublocations.impact[[h]][l])
              sim.dat.use$sublocation.unique[index.l]=sublocations.h[l]
-             random.deviations$sublocation.unique[index.l,n]=
+             if(length(random.deviations$sublocation.unique)>0){
+              random.deviations$sublocation.unique[index.l,n]=
                   sublocation.sample.estimates[sublocations.h[l]]
+             }
              }
          }
     # subststitute existing control locations
     # if the number of existing control locations is more than the number required subsample
     if(length(dat.sublocations.control)>locations.control.i){
       dat.sublocations.control=sample(dat.sublocations.control,locations.control.i)}
-       for(h in 1:length(dat.sublocations.control)){
+    for(h in 1:length(dat.sublocations.control)){
          index.h=which(sim.dat.use$Location.unique==names(sim.dat.sublocations.control)[h])
          sim.dat.use$Location.unique[index.h]=names(dat.sublocations.control)[h]
          random.deviations$Location.unique[index.h,n]=
@@ -286,8 +289,10 @@ run.scenario<-function(x,scenario=scenarioParams){
          for(l in 1:length(sublocations.h)){
              index.l=which(sim.dat.use$sublocation.unique==sim.dat.sublocations.control[[h]][l])
              sim.dat.use$sublocation.unique[index.l]=sublocations.h[l]
-             random.deviations$sublocation.unique[index.l,n]=
+             if(length(random.deviations$sublocation.unique)>0){
+              random.deviations$sublocation.unique[index.l,n]=
                   sublocation.sample.estimates[sublocations.h[l]]
+             }
              }
          }
     sim.dat.list=c(sim.dat.list,list(sim.dat.use))
