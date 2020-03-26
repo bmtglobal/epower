@@ -1196,7 +1196,8 @@ powerScenario<-function(inputData=dataComponents){
       "n.its"=n.its,
       "fileName"=fileName,
 			"modelEstimates"=result,
-      "variableType"=variableType)
+      "variableType"=variableType,
+			"result"=result)
 	return(scenarioTerms)
 
 }
