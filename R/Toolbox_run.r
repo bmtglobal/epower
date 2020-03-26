@@ -375,19 +375,19 @@ assessPower<-function(){
 designFactors<-function(toolbox.interface.file=excelInFile) {
 # load workbook excelInFile
 	require(XLConnect,quietly=TRUE)
-	wb <- loadWorkbook(toolbox.interface.file, create = FALSE)
+	wb <- XLConnect::loadWorkbook(toolbox.interface.file, create = FALSE)
 
 	## define components of data for analysis
-	dat=readWorksheet(wb,"pilot_data")
-	variableType<-readWorksheet(wb,"design_specification",startRow=3,startCol=1,endRow=4,endCol=2)
-	design.matrix=readWorksheet(wb,"design_specification",startRow=6,startCol=1,endRow=15,endCol=2)
-	levels.dat=readWorksheet(wb,"design_specification",startRow=16,startCol=1,endRow=20,endCol=2)
-	scenario.data=readWorksheet(wb,"design_specification", startRow=23, startCol=1, endRow=34, endCol=2)
-	effect.info=readWorksheet(wb,"design_specification",startRow=38,startCol=1,endRow=43,endCol=2)
-	ncores<-readWorksheet(wb,"design_specification",startRow=46,startCol=1,endRow=48,endCol=2)
-	costResponsePars<-readWorksheet(wb,"design_specification",startRow=50,startCol=1,endRow=57,endCol=2)
-	paramCostBounds<-readWorksheet(wb,"design_specification",startRow=26,startCol=4,endRow=34,endCol=5)
-  keep.sim.dat<-unlist(readWorksheet(wb,"design_specification",startRow=59,startCol=2,endRow=60,endCol=2))=="Yes"
+	dat=XLConnect::readWorksheet(wb,"pilot_data")
+	variableType<-XLConnect::readWorksheet(wb,"design_specification",startRow=3,startCol=1,endRow=4,endCol=2)
+	design.matrix=XLConnect::readWorksheet(wb,"design_specification",startRow=6,startCol=1,endRow=15,endCol=2)
+	levels.dat=XLConnect::readWorksheet(wb,"design_specification",startRow=16,startCol=1,endRow=20,endCol=2)
+	scenario.data=XLConnect::readWorksheet(wb,"design_specification", startRow=23, startCol=1, endRow=34, endCol=2)
+	effect.info=XLConnect::readWorksheet(wb,"design_specification",startRow=38,startCol=1,endRow=43,endCol=2)
+	ncores<-XLConnect::readWorksheet(wb,"design_specification",startRow=46,startCol=1,endRow=48,endCol=2)
+	costResponsePars<-XLConnect::readWorksheet(wb,"design_specification",startRow=50,startCol=1,endRow=57,endCol=2)
+	paramCostBounds<-XLConnect::readWorksheet(wb,"design_specification",startRow=26,startCol=4,endRow=34,endCol=5)
+  keep.sim.dat<-unlist(XLConnect::readWorksheet(wb,"design_specification",startRow=59,startCol=2,endRow=60,endCol=2))=="Yes"
 
 	## re-write the pilot.dat colnames using the standard factor names
 	colnames(dat)=design.matrix$Factor[match(colnames(dat),design.matrix$Name)]
@@ -521,7 +521,7 @@ run.scenario<-function(x,scenario=scenarioParams){
   effect.type<-scenario$effect.type
   mod1.formula.use<-scenario$mod1.formula.use
   variableType<-scenario$variableType
-  
+
   locations.impact.i<-as.numeric(unlist(x["locations.impact"]))
   locations.control.i<-as.numeric(unlist(x["locations.control"]))
   times.before.i<-as.numeric(unlist(x["times.before"]))
@@ -534,22 +534,22 @@ run.scenario<-function(x,scenario=scenarioParams){
     cat("You have specified a binomial distribution for proportional or \n",
         "percentage data, without indicating how many trials to simulate \n")
     return()}
-  
+
   if(is.na(trials.i)==F){
     if(trials.i>1 & length(unique(dat$Response))==2){trials.i=NA}}
   fixed.sample<-scenario$fixed.sample
   fixed.levels<-scenario$fixed.levels
   hyperpar.sample<-scenario$hyperpar.sample
-  
-  
+
+
   BIeta<-fixed.sample[,fixed.levels[intersect(grep("Impact", fixed.levels),
                                               grep("Before",fixed.levels))]]
   BCeta=fixed.sample[,fixed.levels[intersect(grep("Control", fixed.levels),
                                              grep("Before",fixed.levels))]]
-  
+
   # calculate observed before states based on the appropriate link functions
   BIp=xformEta(BIeta,variableType,"response")
-  
+
   # Calculate the After Impact site state based on the specified effect size
   effect.i=unlist(x["effect"])
   # effect size
@@ -598,21 +598,21 @@ run.scenario<-function(x,scenario=scenarioParams){
       if(max(AI.p)>=1){AI.p[which(AI.p>=1)]=1-1e-5}
     }
   }
-  
+
   # Back transform the After Impact mean onto the scale of the linear predictor
   AIeta<-xformEta(AI.p,variableType,"link")
-  
+
   # calculate the number of sites and time samples required
   n.locations=locations.impact.i+locations.control.i
   n.times=times.before.i+times.after.i
   n.sublocations=n.locations*sublocations.within.locations.i
   n.subtimes=n.times*subtimes.within.times.i
-  
+
   # create a dataframe for the sampling design
   sim.dat=as.data.frame(expand.grid(Location=1:n.locations, Time=1:n.times)) # every locations measured every time
   sim.dat$BvA="B"; sim.dat$BvA[which(match(sim.dat$Time,times.before.i+1:times.after.i)>0)]="A"
   sim.dat$CvI="C"; sim.dat$CvI[which(match(sim.dat$Location,locations.control.i+1:locations.impact.i)>0)]="I"
-  
+
   sim.dat$Time=as.factor(sim.dat$Time)
   sim.dat$Location=as.factor(sim.dat$Location)
   sim.dat$T.L=as.factor(paste(sim.dat$Time,sim.dat$Location,sep="_"))
@@ -622,11 +622,11 @@ run.scenario<-function(x,scenario=scenarioParams){
   if(variableType=="binomial" & is.null(dat$Trials)==F) {
     sim.dat$trials.i=trials.i}
   sim.dat$BvAxCvI=as.factor(paste(sim.dat$BvA,sim.dat$CvI,sep="._."))
-  
+
   # ensure unique coding of relevant factors
   sim.dat$Time.unique=as.factor(paste(sim.dat$BvA,sim.dat$Time, sep="_"))
   sim.dat$Location.unique=as.factor(paste(sim.dat$CvI,sim.dat$Location, sep="_"))
-  
+
   # replicate the sampling design by the number of sublocations.i
   # can change this to a straight apply
   sim.dat=do.call(rbind,lapply(1:sublocations.within.locations.i, function(reps,data) {data$sublocation <- reps;data}, data = sim.dat))
@@ -635,17 +635,17 @@ run.scenario<-function(x,scenario=scenarioParams){
   # replicate the sampling design by the number of replicates.i
   sim.dat=do.call(rbind,lapply(1:replicates.i, function(reps,data) {data$reps <- reps;data}, data = sim.dat))
   sim.dat$repID=(1:nrow(sim.dat)) + nrow(dat)
-  
+
   # ensure they are factor variables and generate the necessary interaction terms
   sim.dat$sublocation.unique=as.factor(paste(sim.dat$CvI,sim.dat$Location,sim.dat$sublocation, sep="_"))
   sim.dat$subtime.unique=as.factor(paste(sim.dat$BvA,sim.dat$LTime,sim.dat$subtime, sep="_"))
   sim.dat$T.subL=as.factor(paste(sim.dat$Time.unique,sim.dat$sublocation.unique,sep="_"))
   sim.dat$L.subT=as.factor(paste(sim.dat$Location.unique,sim.dat$subtime.unique,sep="_"))
   sim.dat$subL.subT=as.factor(paste(sim.dat$sublocation.unique,sim.dat$subtime.unique,sep="_"))
-  
+
   # create a matrix for the simulated response data of size nrow sim.dat, ncol = n.its
   response.mat=matrix(ncol=scenario$n.its,nrow=nrow(sim.dat))
-  
+
   # start with the appropriate means
   #BC - use actual mean estimate
   index.BC=which(sim.dat$BvA=="B" & sim.dat$CvI=="C")
@@ -659,21 +659,21 @@ run.scenario<-function(x,scenario=scenarioParams){
   #AC  - use BC mean estimate
   index.AC=which(sim.dat$BvA=="A" & sim.dat$CvI=="C")
   response.mat[index.AC,]<-matrix(rep(BCeta,length(index.AC)),ncol=scenario$n.its,byrow=T)
-  
+
   # get the random standard deviations from the precision estimates
   random.structure=scenario$random.structure
   random.effects=sqrt(1/scenario$hyperpar.sample[,which(match(
     gsub("Precision for ","",colnames(scenario$hyperpar.sample)),
     random.structure)>0)])
   colnames(random.effects)=gsub("Precision for ","",colnames(random.effects))
-  
+
   # use rnorm to sample deviations for each random effect for each iteration
   random.deviations=lapply(random.structure,FUN=function(tt){
     do.call("cbind",lapply(random.effects[,tt],FUN=function(x){
       rnorm(length(unique(sim.dat[,tt])),0,x)[
         match(sim.dat[,tt],unique(sim.dat[,tt]))]}))})
   names(random.deviations)=random.structure
-  
+
   # substitute Location and sublocation deviations with any orginal data
   dat.times=unique(dat[,c("BvA","Time.unique")])
   dat.times=split(as.character(dat.times$Time.unique),list(dat.times$BvA))
@@ -691,7 +691,7 @@ run.scenario<-function(x,scenario=scenarioParams){
   dat.locations.control=dat.locations$Control
   dat.sublocations.impact=dat.sublocations[dat.locations.impact]
   dat.sublocations.control=dat.sublocations[dat.locations.control]
-  
+
   sim.dat.times=unique(sim.dat[,c("BvA","Time.unique")])
   sim.dat.times=split(as.character(sim.dat.times$Time.unique),list(sim.dat.times$BvA))
   sim.dat.locations=unique(sim.dat[,c("CvI","Location.unique")])
@@ -708,11 +708,11 @@ run.scenario<-function(x,scenario=scenarioParams){
   sim.dat.locations.control=sim.dat.locations$C
   sim.dat.sublocations.impact=sim.dat.sublocations[sim.dat.locations.impact]
   sim.dat.sublocations.control=sim.dat.sublocations[sim.dat.locations.control]
-  
+
   sim.dat$sublocation.unique=as.character(sim.dat$sublocation.unique)
   sim.dat$Location.unique=as.character(sim.dat$Location.unique)
-  
-  
+
+
   sim.dat.list=list()
   for(n in 1:scenario$n.its){
     # subsamples locations and sublocations for each iteration
@@ -720,7 +720,7 @@ run.scenario<-function(x,scenario=scenarioParams){
     dat.locations.control=dat.locations$Control
     dat.sublocations.impact=dat.sublocations[dat.locations.impact]
     dat.sublocations.control=dat.sublocations[dat.locations.control]
-    
+
     # extract the posterior sample estimates
     sample.estimates=scenario$post.sample[[n]]$latent
     Location.sample.estimates=sample.estimates[grep("Location.unique",
@@ -731,10 +731,10 @@ run.scenario<-function(x,scenario=scenarioParams){
     if(length(sublocation.sample.estimates)>0){
       names(sublocation.sample.estimates)=levels(dat$sublocation.unique)
     }
-    
+
     # copy the simulated data and replace with the existing elements
     sim.dat.use=sim.dat
-    
+
     # subststitute existing impact locations
     # if the number of existing impact locations is more than the number required subsample
     if(length(dat.sublocations.impact)>locations.impact.i){
@@ -781,14 +781,14 @@ run.scenario<-function(x,scenario=scenarioParams){
     }
     sim.dat.list=c(sim.dat.list,list(sim.dat.use))
   }
-  
+
   # sum all the deviations and add to the response matrix
   response.mat=Reduce("+",random.deviations)+response.mat
-  
+
   # now transform from eta
   response.mat=apply(response.mat, MARGIN=2,FUN=xformEta,
                      variableType=variableType,direction="response")
-  
+
   # for each row, sample from the appropriate distribution
   if(variableType=="gaussian"){
     hyper.var=sqrt(1/scenario$hyperpar.sample[,"Precision for the Gaussian observations"])
@@ -824,7 +824,7 @@ run.scenario<-function(x,scenario=scenarioParams){
       vec[which(vec==0)]=0.001
       return(vec)}))
   }
-  
+
   # Now add any existing "Before" data to the simulated data
   for(i in 1:length(sim.dat.list)){
     sim.dat.i=sim.dat.list[[i]][,c("BvA","CvI",scenario$random.structure)]
@@ -836,16 +836,16 @@ run.scenario<-function(x,scenario=scenarioParams){
     sim.dat.i$CvI[which(sim.dat.i$CvI=="C")]="Control"
     sim.dat.i$CvI[which(sim.dat.i$CvI=="I")]="Impact"
     sim.dat.i$Trials=trials.i
-    
+
     # add the pilot data to the simulated data
     #sim.dat.i=rbind(dat[which(dat$BvA=="Before"),colnames(sim.dat.i)],sim.dat.i)
-    
+
     sim.dat.i$BvA=as.factor(sim.dat.i$BvA)
     sim.dat.i$CvI=as.factor(sim.dat.i$CvI)
     sim.dat.list[[i]]=sim.dat.i
   }
-  
-  
+
+
   # Model formula
   baci.formula.inla=as.formula(
     paste0(c("Response~BvA*CvI",
@@ -858,7 +858,7 @@ run.scenario<-function(x,scenario=scenarioParams){
   ## run the test using dopar
   require(doParallel,quietly=TRUE)
   require(foreach,quietly=TRUE)
-  
+
   cl <- makeCluster(as.numeric(dataComponents$ncores)) #use 6 cores, ie for an 8-core machine
   registerDoParallel(cl)
   system.time(
@@ -868,13 +868,13 @@ run.scenario<-function(x,scenario=scenarioParams){
                         .packages="INLA")%do% {
                           require(INLA,quietly=TRUE)
                           dat.n=sim.dat.list[[i]]
-                          mod.baci=try(inla(baci.formula.inla,data=dat.n,
+                          mod.baci=try(INLA::inla(baci.formula.inla,data=dat.n,
                                             family=variableType,
                                             Ntrials=dat.n$Trials, verbose = TRUE,
                                             control.compute=list(dic=TRUE, config=TRUE,
                                                                  waic= TRUE, cpo = TRUE, mlik = TRUE),
                                             control.predictor=list(compute=T)),silent=T)
-                          mod.no.baci=try(inla(no.baci.formula.inla,data=dat.n,
+                          mod.no.baci=try(INLA::inla(no.baci.formula.inla,data=dat.n,
                                                family=variableType,
                                                Ntrials=dat.n$Trials, verbose = TRUE,
                                                control.compute=list(dic=TRUE, config=TRUE,
@@ -895,13 +895,13 @@ run.scenario<-function(x,scenario=scenarioParams){
                         .packages="INLA")%dopar% {
                           require(INLA,quietly=TRUE)
                           dat.n=sim.dat.list[[i]]
-                          mod.baci=try(inla(baci.formula.inla,data=dat.n,
+                          mod.baci=try(INLA::inla(baci.formula.inla,data=dat.n,
                                             family=variableType,
                                             Ntrials=dat.n$Trials, verbose = TRUE,
                                             control.compute=list(dic=TRUE, config=TRUE,
                                                                  waic= TRUE, cpo = TRUE, mlik = TRUE),
                                             control.predictor=list(compute=T)),silent=T)
-                          mod.no.baci=try(inla(no.baci.formula.inla,data=dat.n,
+                          mod.no.baci=try(INLA::inla(no.baci.formula.inla,data=dat.n,
                                                family=variableType,
                                                Ntrials=dat.n$Trials, verbose = TRUE,
                                                control.compute=list(dic=TRUE, config=TRUE,
@@ -1031,7 +1031,7 @@ powerScenario<-function(inputData=dataComponents){
                                 collapse="+"))
   dz.val=1.909-(0.002101*n.its) # may need to alter this, needs testing.
   if(dz.val<1){dz.val==1}
-  result=inla(mod1.formula.inla,data=dat[,c("Response","BvAxCvI","E",include.terms)],
+  result=INLA::inla(mod1.formula.inla,data=dat[,c("Response","BvAxCvI","E",include.terms)],
                   family=variableType,
                   Ntrials=dat$Trials, verbose = FALSE,
                   control.inla=list(int.strategy='grid', dz=dz.val),
@@ -1061,13 +1061,13 @@ powerScenario<-function(inputData=dataComponents){
                                   collapse="+"))
 
     require(INLA,quietly=TRUE)
-    mod.baci=inla(baci.formula.inla,data=dat[,c("Response","BvA","CvI","E",include.terms)],
+    mod.baci=INLA::inla(baci.formula.inla,data=dat[,c("Response","BvA","CvI","E",include.terms)],
                     family=variableType,
                     Ntrials=dat$Trials, verbose = FALSE,
                     control.compute=list(dic=TRUE, config=TRUE,
                     waic= TRUE, cpo = TRUE, mlik = TRUE),
                     control.predictor=list(compute=T))
-    mod.no.baci=inla(no.baci.formula.inla,data=dat[,c("Response","BvA","CvI","E",include.terms)],
+    mod.no.baci=INLA::inla(no.baci.formula.inla,data=dat[,c("Response","BvA","CvI","E",include.terms)],
                     family=variableType,
                     Ntrials=dat$Trials, verbose = FALSE,
                     control.compute=list(dic=TRUE, config=TRUE,

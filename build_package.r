@@ -22,7 +22,7 @@ setwd("C:/Users/rfisher/OneDrive - Australian Institute of Marine Science/Docume
 devtools::document()
 
 use_package("doParallel")
-use_package("XLConnect")
+use_package("XLConnect", type="Suggests")
 use_package("INLA")
 
 # ----------------

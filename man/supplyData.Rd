@@ -4,9 +4,15 @@
 \alias{supplyData}
 \title{supplyData}
 \usage{
-supplyData(dat, variableType = "gaussian", design.matrix, levels.dat,
-  scenario.data, effect.info = list(Multiplicative = 1, Fixed.change = 0,
-  Effect.values = "0;-0.3"), ncores = 1)
+supplyData(
+  dat,
+  variableType = "gaussian",
+  design.matrix,
+  levels.dat,
+  scenario.data,
+  effect.info = list(Multiplicative = 1, Fixed.change = 0, Effect.values = "0;-0.3"),
+  ncores = 1
+)
 }
 \arguments{
 \item{dat}{A data.frame containing the pilot data to use in the analysis}
