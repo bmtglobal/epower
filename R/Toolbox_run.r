@@ -972,7 +972,17 @@ powerScenario<-function(inputData=dataComponents){
 	factor.vars.missing<-inputData$factor.vars.missing
 	after.code<-inputData$after.code
 	variableType<-as.character(inputData$variableType)
-
+	
+	if(times.before<2){
+	  stop(paste("Your data do not have replicate sample times in your before data. A BACI analysis
+	             is only valid when there are replicate sampling times in either your before data."))
+	}
+	
+	if(locations.control<2){
+	  stop(paste("Your data do not have replicate control locations. A BACI analysis
+	             is only valid when there are replicate control locations."))
+	}
+	
 	n.its<-as.numeric(scenario.data[which(scenario.data$Factor=="Number of iterations"),"Value"])
 	fileName<<-scenario.data[which(scenario.data$Factor=="Filename"),"Value"]
 
