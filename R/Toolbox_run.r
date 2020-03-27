@@ -1030,7 +1030,7 @@ powerScenario<-function(inputData=dataComponents){
                     paste("f(",include.terms,", model='iid')",sep="")),
                                 collapse="+"))
   dz.val=1.909-(0.002101*n.its) # may need to alter this, needs testing.
-  if(dz.val<1){dz.val==1}
+  if(dz.val<1){dz.val=0.75} # inla default
   result=INLA::inla(mod1.formula.inla,data=dat[,c("Response","BvAxCvI","E",include.terms)],
                   family=variableType,
                   Ntrials=dat$Trials, verbose = FALSE,
