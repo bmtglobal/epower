@@ -972,6 +972,16 @@ powerScenario<-function(inputData=dataComponents){
 	factor.vars.missing<-inputData$factor.vars.missing
 	after.code<-inputData$after.code
 	variableType<-as.character(inputData$variableType)
+
+	n.its<-as.numeric(scenario.data[which(scenario.data$Factor=="Number of iterations"),"Value"])
+	fileName<<-scenario.data[which(scenario.data$Factor=="Filename"),"Value"]
+
+# design
+	locations.impact=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of Impact Locations"),"Value"]),split=";")))#1
+	locations.control=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of Control Locations"),"Value"]),split=";")))#c(2,6)
+	sublocations.within.locations=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sublocations within Location"),"Value"]),split=";")))
+	times.before=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times Before"),"Value"]),split=";")))
+	times.after=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times After"),"Value"]),split=";")))
 	
 	if(times.before<2){
 	  stop(paste("Your data do not have replicate sample times in your before data. A BACI analysis
@@ -983,15 +993,6 @@ powerScenario<-function(inputData=dataComponents){
 	             is only valid when there are replicate control locations."))
 	}
 	
-	n.its<-as.numeric(scenario.data[which(scenario.data$Factor=="Number of iterations"),"Value"])
-	fileName<<-scenario.data[which(scenario.data$Factor=="Filename"),"Value"]
-
-# design
-	locations.impact=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of Impact Locations"),"Value"]),split=";")))#1
-	locations.control=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of Control Locations"),"Value"]),split=";")))#c(2,6)
-	sublocations.within.locations=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sublocations within Location"),"Value"]),split=";")))
-	times.before=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times Before"),"Value"]),split=";")))
-	times.after=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times After"),"Value"]),split=";")))
 	subtimes.within.times=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of subtimes within Time"),"Value"]),split=";")))
   trials=dat$Trials#as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of trials"),"Value"]),split=";")))
   # if Trials is blank, assume 1
