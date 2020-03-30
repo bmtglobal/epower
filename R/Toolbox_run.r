@@ -982,17 +982,17 @@ powerScenario<-function(inputData=dataComponents){
 	sublocations.within.locations=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sublocations within Location"),"Value"]),split=";")))
 	times.before=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times Before"),"Value"]),split=";")))
 	times.after=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times After"),"Value"]),split=";")))
-	
+
 	if(times.before<2){
 	  stop(paste("Your data do not have replicate sample times in your before data. A BACI analysis
-	             is only valid when there are replicate sampling times in either your before data."))
+	             is only valid when there are replicate sampling times in your before data."))
 	}
-	
+
 	if(locations.control<2){
 	  stop(paste("Your data do not have replicate control locations. A BACI analysis
 	             is only valid when there are replicate control locations."))
 	}
-	
+
 	subtimes.within.times=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of subtimes within Time"),"Value"]),split=";")))
   trials=dat$Trials#as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of trials"),"Value"]),split=";")))
   # if Trials is blank, assume 1
