@@ -984,7 +984,7 @@ powerScenario<-function(inputData=dataComponents){
 	times.after=as.numeric(unlist(strsplit(as.character(scenario.data[which(scenario.data$Factor=="Number of sample times After"),"Value"]),split=";")))
 
 	if(times.before<2){
-	  stop(paste("Your data do not have replicate sample times in your before data. A BACI analysis
+	  stop(paste("Your data do not have replicate sample times. A BACI analysis
 	             is only valid when there are replicate sampling times in your before data."))
 	}
 
@@ -1658,6 +1658,23 @@ supplyData <- function(dat,
                        scenario.data,
                        effect.info=list(Multiplicative=1,Fixed.change=0,Effect.values="0;-0.3"),
                        ncores=1) {
+  dm.labs <- c("Response", "Trials", "Location", "sublocation", "Time", "subtime", "BvA", "CvI")
+  scn.labs <- c("Number.of.iterations", "filename", "Number.of.Impact.Locations",
+                "Number.of.Control.Locations", "Number.of.sublocations.within.Location", "Number.of.sample.times.Before",
+                "Number.of.sample.times.After", "Number.of.subtimes.within.Time", "Number.of.trials", "Number.of.replicate.measurements")
+
+  # check the input labels
+  missing.lab <- dm.labs[is.na(match(names(design.matrix),
+              dm.labs))]
+  if(length(missing.lab)>0){
+    stop(paste("The following required inputs are missing:", missing.lab, sep=" "))
+  }
+  missing.lab <- scn.labs[is.na(match(names(scenario.data),
+                                     scn.labs))]
+  if(length(missing.lab)>0){
+    stop(paste("The following required inputs are missing:", missing.lab, sep=" "))
+  }
+
   # convert all factors to strings to be consistent with the excel interface extraction
   #dat <- data.frame(lapply(dat, as.character), stringsAsFactors=FALSE)
   indx <- sapply(dat, is.factor)
@@ -1694,15 +1711,13 @@ supplyData <- function(dat,
   effect.info$Effect.Type=gsub("."," ",effect.info$Effect.Type,fixed=T)
 
   # ncores re format
-  ncores<- data.frame(Cores="Number of cores",
-                      n=ncores,stringsAsFactors=F)
+  ncores<- 1 #data.frame(Cores="Number of cores",
+            #          n=ncores, stringsAsFactors=F)
  	#costResponsePars<-readWorksheet(wb,"design_specification",startRow=50,startCol=1,endRow=57,endCol=2)
 	#paramCostBounds<-readWorksheet(wb,"design_specification",startRow=26,startCol=4,endRow=34,endCol=5)
   #keep.sim.dat<-unlist(readWorksheet(wb,"design_specification",startRow=59,startCol=2,endRow=60,endCol=2))=="Yes"
    keep.sim.dat<-FALSE
    names(keep.sim.dat)="Col1"
-
-
 
 	## re-write the pilot.dat colnames using the standard factor names
 	colnames(dat)=design.matrix$Factor[match(colnames(dat),design.matrix$Name)]
@@ -1737,18 +1752,19 @@ supplyData <- function(dat,
 	colnames(missing.mat)=factor.vars.missing
 	dat=cbind(dat,missing.mat)
 
-	## ensure the factor variables are coded as factors
-	## sapply(1:length(factor.vars), function(x, dat){ dat[,factor.vars[x]]<<-as.factor(dat[,factor.vars[x]])}, dat=dat)
-
 	## ensure unique coding of relevant factors
 	dat$Time.unique<-as.factor(paste(dat$BvA,dat$Time, sep="_"))
 	dat$subtime.unique<-as.factor(paste(dat$BvA,dat$Time, dat$subtime, sep="_"))
 	dat$Location.unique<-as.factor(paste(dat$CvI,dat$Location, sep="_"))
 	dat$sublocation.unique<-as.factor(paste(dat$CvI,dat$Location,dat$sublocation, sep="_"))
-#	dat[,Time.unique]=as.factor(paste(dat[,BvA],dat[,Time], sep="_"))
-#	dat[,subtime.unique]=as.factor(paste(dat$CvI,dat[,Time], dat[,subtime], sep="_"))
-#	dat[,Location.unique]=as.factor(paste(dat[,CvI],dat[,Location], sep="_"))
-#
+
+  if(length(levels(dat$Time.unique))<3){
+    stop("You have less than three sampling times. epower is unable to estimate temporal variance")
+  }
+	if(length(levels(dat$Location.unique))<3){
+	  stop("You have less than three sampling locations. epower is unable to estimate spatial variance")
+	}
+
 	## generate the necesary interactions
 	dat$T.L=as.factor(paste(dat$Time.unique,dat$Location.unique,sep="_"))
 	dat$T.subL=as.factor(paste(dat$Time.unique,dat$sublocation.unique,sep="_"))
@@ -1757,13 +1773,17 @@ supplyData <- function(dat,
 
 	after.code=levels.dat[which(levels.dat$Levels=="After"),"Code"]
 
-	#detach("package:XLConnect", unload=TRUE) # rjava interface sometimes corrupts parallel processing
-
   # re-write level data
   dat$BvA[which(dat$BvA==levels.dat$Code[1])]=levels.dat$Levels[1]
   dat$BvA[which(dat$BvA==levels.dat$Code[3])]=levels.dat$Levels[3]
   dat$CvI[which(dat$CvI==levels.dat$Code[2])]=levels.dat$Levels[2]
   dat$CvI[which(dat$CvI==levels.dat$Code[4])]=levels.dat$Levels[4]
+
+  if(length(unique(dat$CvI))<2){
+    stop(paste("You only have data specified as ", unique(dat$CvI),
+               " locations. Power analysis for a BACI design requires both control and impact locations to be supplied.",
+               sep=""))
+  }
 
 	costResponseNames<-NA#costResponsePars[,1]
 	costResponsePars<-NA#as.list(costResponsePars[,2])
