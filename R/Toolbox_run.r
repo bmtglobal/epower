@@ -1710,9 +1710,6 @@ supplyData <- function(dat,
   rownames(effect.info)=1:nrow(effect.info)
   effect.info$Effect.Type=gsub("."," ",effect.info$Effect.Type,fixed=T)
 
-  # ncores re format
-  ncores<- 1 #data.frame(Cores="Number of cores",
-            #          n=ncores, stringsAsFactors=F)
  	#costResponsePars<-readWorksheet(wb,"design_specification",startRow=50,startCol=1,endRow=57,endCol=2)
 	#paramCostBounds<-readWorksheet(wb,"design_specification",startRow=26,startCol=4,endRow=34,endCol=5)
   #keep.sim.dat<-unlist(readWorksheet(wb,"design_specification",startRow=59,startCol=2,endRow=60,endCol=2))=="Yes"
@@ -1790,8 +1787,6 @@ supplyData <- function(dat,
 	#names(costResponsePars)<-costResponseNames
 
 	variableType<-variableType[2]
-
-	ncores<-ncores[2]
 
 	# returned object is list
 	dataComponents<-list("dat"=dat,
