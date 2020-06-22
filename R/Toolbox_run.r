@@ -341,9 +341,12 @@ assessPower<-function(){
                         gsub(".unique","",scenarioParams$random.structure))
   factor.vars.all<-c("BvA","CvI",random.vars)
 
-  save(list=c("scen.out","scenarioParams","dataComponents","scenario.matrix"),
+  if(dataComponents$keep.sim.dat==TRUE){
+      save(list=c("scen.out","scenarioParams","dataComponents","scenario.matrix"),
        file=paste("Saved_workspace_",gsub(".xlsx","",basename(excelInFile)),"_",fileName,
                 ".RData",sep=""))
+  }
+
   write.csv(summary.sim,file=paste(gsub(".xlsx","",basename(excelInFile)),"_",fileName,
                                    "_scenario_power_summary.csv",sep=""))
 
