@@ -10,7 +10,8 @@
 #' Maintainer: \tab Rebecca Fisher\cr
 #' License: \tab GPL (>= 3)\cr
 #' LazyLoad: \tab yes\cr
-#' Depends: \tab XLConnect, doParallel, INLA\cr
+#' Depends: \tab doParallel, INLA\cr
+#' Suggests: \tab openxlsx, XLConnect\Cr
 #' }
 #'
 #' @details
@@ -125,6 +126,8 @@ NULL
 #' @param ncores the number of cores required for the analysis
 #' @param dir.name the directory in which the excel file
 #' is located.
+#' @param read_package the R package to use for reading the excelworkbook interface.
+#' Must be "XLConnect" or "openxlsx". Defaults to XLConnect.
 #'
 #' @details The function requires INLA for estimation
 #' of a mixed effects model used to parameterize the monte carlo simulation
@@ -169,7 +172,7 @@ NULL
 #' probabilities in the file ...Model_fit_stats.csv. This functionality can be
 #' used to test for a significant impact in the supplied data.
 #'
-#' XLConnect is used to
+#' XLConnect or openxlsx is used to
 #' read the excel workbook file.
 #'
 #' A template for the excel workbook file should have been made available with the package
@@ -197,7 +200,8 @@ NULL
 
 fitData<-function(
 		excelInFile="",
-		dir.name=getwd()
+		dir.name=getwd(),
+		read_package="XLConnect"
     ){
 
   if(nchar(excelInFile)>0){
@@ -228,7 +232,7 @@ fitData<-function(
 		}
 	}
 
-	#packageRequired<-c("XLConnect","INLA","doParallel")
+	#packageRequired<-c("openxlsx","INLA","doParallel")
 	#packageMatch<-match(packageRequired,installed.packages()[,1])
 	#packageNA<-which(is.na(packageMatch))
 	#if(length(packageNA)>0) {
@@ -238,7 +242,7 @@ fitData<-function(
 	#}
   #excelInFile<<-excelInFile
 #  'require' only used at debugging; required packages moved to DESCRIPTION
-#	packageRequired<-c("XLConnect","INLA","doParallel")
+#	packageRequired<-c("openxlsx","INLA","doParallel")
 #	packageMatch<-match(packageRequired,installed.packages()[,1])
 #	packageNA<-which(is.na(packageMatch))
 #	if(length(packageNA)>0) {
@@ -247,7 +251,7 @@ fitData<-function(
 #		install.packages(packageRequired[packageNA])
 #	}
 
-	packageRequired<-c("XLConnect","INLA","doParallel")
+	packageRequired<-c("INLA","doParallel")
 	packageMatch<-match(packageRequired,installed.packages()[,1])
 	packageNA<-which(is.na(packageMatch))
 	if(length(packageNA)>0) {
@@ -257,7 +261,7 @@ fitData<-function(
 	}
 
 	excelInFile<<-excelInFile
-	dataComponents<<-do.call(designFactors,list(toolbox.interface.file=excelInFile),quote=TRUE)
+	dataComponents<<-do.call(designFactors,list(toolbox.interface.file=excelInFile, read_type=read_package),quote=TRUE)
 
 	require(INLA,quietly=TRUE)
 	scenarioParams<<-do.call(powerScenario,list(inputData=dataComponents))
@@ -362,7 +366,7 @@ assessPower<-function(){
 #'
 #' Read excel scenario workbook and convert to R data objects
 #'
-#' This function uses XLConnect to read the excel scenario
+#' This function uses XLConnect or openxlsx to read the excel scenario
 #' workbook, and then processes that information into
 #' a series of R objects.
 #'
@@ -375,22 +379,58 @@ assessPower<-function(){
 #' @author Rebecca Fisher \email{r.fisher@@aims.gov.au}
 #' @examples
 #' dataComponents<-designFactors()
-designFactors<-function(toolbox.interface.file=excelInFile) {
-# load workbook excelInFile
-	require(XLConnect,quietly=TRUE)
-	wb <- XLConnect::loadWorkbook(toolbox.interface.file, create = FALSE)
+designFactors<-function(toolbox.interface.file=excelInFile, read_type=read_package) {
 
 	## define components of data for analysis
-	dat=XLConnect::readWorksheet(wb,"pilot_data")
-	variableType<-XLConnect::readWorksheet(wb,"design_specification",startRow=3,startCol=1,endRow=4,endCol=2)
-	design.matrix=XLConnect::readWorksheet(wb,"design_specification",startRow=6,startCol=1,endRow=15,endCol=2)
-	levels.dat=XLConnect::readWorksheet(wb,"design_specification",startRow=16,startCol=1,endRow=20,endCol=2)
-	scenario.data=XLConnect::readWorksheet(wb,"design_specification", startRow=23, startCol=1, endRow=34, endCol=2)
-	effect.info=XLConnect::readWorksheet(wb,"design_specification",startRow=38,startCol=1,endRow=43,endCol=2)
-	ncores<-XLConnect::readWorksheet(wb,"design_specification",startRow=46,startCol=1,endRow=48,endCol=2)
-	costResponsePars<-XLConnect::readWorksheet(wb,"design_specification",startRow=50,startCol=1,endRow=57,endCol=2)
-	paramCostBounds<-XLConnect::readWorksheet(wb,"design_specification",startRow=26,startCol=4,endRow=34,endCol=5)
-  keep.sim.dat<-unlist(XLConnect::readWorksheet(wb,"design_specification",startRow=59,startCol=2,endRow=60,endCol=2))=="Yes"
+  if(read_type == "openxlsx"){
+    require(openxlsx,quietly=TRUE)
+    dat <- read.xlsx(toolbox.interface.file, sheet = "pilot_data")
+    variableType<-read.xlsx(toolbox.interface.file,
+                            sheet = "design_specification",
+                            rows=3:4,cols=1:2)
+    design.matrix=read.xlsx(toolbox.interface.file,"design_specification",
+                            #               startRow=6,startCol=1,endRow=15,endCol=2
+                            rows = 6:15, cols = 1:2)
+    levels.dat=read.xlsx(toolbox.interface.file,"design_specification",
+                         #startRow=16,startCol=1,endRow=20,endCol=2
+                         rows = 16:20, cols = 1:2)
+    scenario.data=read.xlsx(toolbox.interface.file,"design_specification",
+                            #startRow=23, startCol=1, endRow=34, endCol=2
+                            rows = 23:34, cols = 1:2)
+    effect.info=read.xlsx(toolbox.interface.file,"design_specification",
+                          #startRow=38,startCol=1,endRow=43,endCol=2
+                          rows = 38:43, cols = 1:2)
+    ncores<-read.xlsx(toolbox.interface.file,"design_specification",
+                      #startRow=46,startCol=1,endRow=48,endCol=2
+                      rows = 46:48, cols = 1:2)
+    costResponsePars<-read.xlsx(toolbox.interface.file,"design_specification",
+                                #startRow=50,startCol=1,endRow=57,endCol=2,
+                                rows = 50:58, cols = 1:2)
+    paramCostBounds<-read.xlsx(toolbox.interface.file,"design_specification",
+                               #startRow=26,startCol=4,endRow=34,endCol=5
+                               rows = 26:34, cols = 4:5)
+    keep.sim.dat<-unlist(read.xlsx(toolbox.interface.file,"design_specification",
+                                   #startRow=59,startCol=2,endRow=60,endCol=2
+                                   rows = 59:60, cols = 1:2))=="Yes"
+
+  }else{
+    require(XLConnect,quietly=TRUE)
+    wb <- XLConnect::loadWorkbook(toolbox.interface.file, create = FALSE)
+
+    ## define components of data for analysis
+    dat=XLConnect::readWorksheet(wb,"pilot_data")
+    variableType<-XLConnect::readWorksheet(wb,"design_specification",startRow=3,startCol=1,endRow=4,endCol=2)
+    design.matrix=XLConnect::readWorksheet(wb,"design_specification",startRow=6,startCol=1,endRow=15,endCol=2)
+    levels.dat=XLConnect::readWorksheet(wb,"design_specification",startRow=16,startCol=1,endRow=20,endCol=2)
+    scenario.data=XLConnect::readWorksheet(wb,"design_specification", startRow=23, startCol=1, endRow=34, endCol=2)
+    effect.info=XLConnect::readWorksheet(wb,"design_specification",startRow=38,startCol=1,endRow=43,endCol=2)
+    ncores<-XLConnect::readWorksheet(wb,"design_specification",startRow=46,startCol=1,endRow=48,endCol=2)
+    costResponsePars<-XLConnect::readWorksheet(wb,"design_specification",startRow=50,startCol=1,endRow=57,endCol=2)
+    paramCostBounds<-XLConnect::readWorksheet(wb,"design_specification",startRow=26,startCol=4,endRow=34,endCol=5)
+    keep.sim.dat<-unlist(XLConnect::readWorksheet(wb,"design_specification",startRow=59,startCol=2,endRow=60,endCol=2))=="Yes"
+    detach("package:XLConnect", unload=TRUE) # rjava interface sometimes corrupts parallel processing
+  }
+
 
 	## re-write the pilot.dat colnames using the standard factor names
 	colnames(dat)=design.matrix$Factor[match(colnames(dat),design.matrix$Name)]
@@ -448,8 +488,6 @@ designFactors<-function(toolbox.interface.file=excelInFile) {
 	dat$subL.subT=as.factor(paste(dat$sublocation.unique,dat$subtime.unique,sep="_"))
 
 	after.code=levels.dat[which(levels.dat$Levels=="After"),"Code"]
-
-	detach("package:XLConnect", unload=TRUE) # rjava interface sometimes corrupts parallel processing
 
   # re-write level data
   dat$BvA[which(dat$BvA==levels.dat$Code[1])]=levels.dat$Levels[1]
@@ -1454,7 +1492,8 @@ costPowerOptimise<-function(scenarioIndex=1){
 			paramCostNext[max(lessBudgetWhich+1)]<-budget
 		}else{
 			# only one solution , the maxium rep scenario considered
-			frontierSolution<-data.frame(paramGrid[nrow(paramGrid),],effect=scenario.matrix[scenarioIndex,9:ncol(scenario.matrix)])
+			frontierSolution<-data.frame(paramGrid[nrow(paramGrid),],
+			                             effect=scenario.matrix[scenarioIndex,9:ncol(scenario.matrix)])
 			solutionValues<-evaluatePower(frontierSolution)
 			frontierSolution$Estimated.power=solutionValues
 			# evaluate all the solutions for type 1 error
@@ -1480,13 +1519,15 @@ costPowerOptimise<-function(scenarioIndex=1){
     #     perhaps excludes those solutions that within budget at the end of an expand grid block,
     #     but not within budget at the start of the next block - hence paramIterWhich loop
 #	frontier<-ifelse((paramCostNext>budget & !is.na(paramCostNext)) |   # either beyond budget
-#					(c(1:length(paramCost))%%paramCumProd[paramIterWhich[1]] == 0 & paramCost<=budget),   # is at maximum number of locations - axis1
+#					(c(1:length(paramCost))%%paramCumProd[paramIterWhich[1]] == 0 & paramCost<=budget),
+#					 # is at maximum number of locations - axis1
 #			1,NA)
 #
 #	frontierSolution<-cbind(paramGrid,paramCost)[which(frontier==1),]
 
    # remove frontier solutions within bounds of larger solutions
-   paramCostMatrix<-cbind(paramCost,paramCostNext,matrix(rep(NA,length(paramCost)),ncol=length(paramIterWhich)-1,nrow=length(paramCost)))
+   paramCostMatrix<-cbind(paramCost,paramCostNext,matrix(rep(NA,length(paramCost)),
+                                                         ncol=length(paramIterWhich)-1,nrow=length(paramCost)))
    for(i in 1:(length(paramIterWhich)-1)){
 		## out of bounds on second axis - second term of paramIterWhich
 		#axisIterWhich<-which((c(1:length(paramCost))%%paramCumProd[paramIterWhich[i+1]]==0))
