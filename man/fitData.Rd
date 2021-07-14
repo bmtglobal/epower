@@ -4,7 +4,7 @@
 \alias{fitData}
 \title{fitData}
 \usage{
-fitData(excelInFile = "", dir.name = getwd())
+fitData(excelInFile = "", dir.name = getwd(), read_package = "XLConnect")
 }
 \arguments{
 \item{excelInFile}{the excel file in which the power
@@ -14,6 +14,9 @@ containing the workbook file.}
 
 \item{dir.name}{the directory in which the excel file
 is located.}
+
+\item{read_package}{the R package to use for reading the excelworkbook interface.
+Must be "XLConnect" or "openxlsx". Defaults to XLConnect.}
 
 \item{ncores}{the number of cores required for the analysis}
 }
@@ -77,7 +80,7 @@ model fit statistical for both models, along with the calculated model
 probabilities in the file ...Model_fit_stats.csv. This functionality can be
 used to test for a significant impact in the supplied data.
 
-XLConnect is used to
+XLConnect or openxlsx is used to
 read the excel workbook file.
 
 A template for the excel workbook file should have been made available with the package
