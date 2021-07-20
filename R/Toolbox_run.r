@@ -380,7 +380,6 @@ assessPower<-function(){
 #' @examples
 #' dataComponents<-designFactors()
 designFactors<-function(toolbox.interface.file=excelInFile, read_type=read_package) {
-
 	## define components of data for analysis
   if(read_type == "openxlsx"){
     require(openxlsx,quietly=TRUE)
@@ -409,9 +408,11 @@ designFactors<-function(toolbox.interface.file=excelInFile, read_type=read_packa
     paramCostBounds<-read.xlsx(toolbox.interface.file,"design_specification",
                                #startRow=26,startCol=4,endRow=34,endCol=5
                                rows = 26:34, cols = 4:5)
-    keep.sim.dat<-unlist(read.xlsx(toolbox.interface.file,"design_specification",
+    keep.val <- read.xlsx(toolbox.interface.file,"design_specification",
                                    #startRow=59,startCol=2,endRow=60,endCol=2
-                                   rows = 59:60, cols = 1:2))=="Yes"
+                                   rows = 58:61, cols = 1:2,
+                colNames = FALSE, rowNames = TRUE)
+    keep.sim.dat<-as.vector(unlist(keep.val))=="Yes"
 
   }else{
     require(XLConnect,quietly=TRUE)
