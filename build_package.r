@@ -17,12 +17,13 @@ library(R.rsp)
 # -----------------------
 #  build documents for the package
 #setwd("/mnt/business/workspace/Clients/BMTOceania/epower/version1.3/epower")
-setwd("C:/Users/rfisher/OneDrive - Australian Institute of Marine Science/Documents/AIMS/EcologicalRiskModelling/EPower/epower")
+#setwd("C:/Users/rfisher/OneDrive - Australian Institute of Marine Science/Documents/AIMS/EcologicalRiskModelling/EPower/epower")
 
 devtools::document()
 
 use_package("doParallel")
 use_package("XLConnect", type="Suggests")
+use_package("openxlsx", type="Suggests")
 use_package("INLA")
 
 # ----------------

@@ -14,22 +14,9 @@ Author: \tab BMT, AIMS and QUT (Rebecca Fisher, Glenn Shiell, Rohan Sadler, Jame
 Maintainer: \tab Rebecca Fisher\cr
 License: \tab GPL (>= 3)\cr
 LazyLoad: \tab yes\cr
-Depends: \tab XLConnect, doParallel, INLA\cr
+Depends: \tab doParallel, INLA\cr
+Suggests: \tab openxlsx, XLConnect\Cr
 }}
-\description{
-\tabular{ll}{
-Package: \tab epower\cr
-Type: \tab Package\cr
-Title: \tab Power analysis for beyond BACI sampling designs\cr
-Version: \tab 1.3\cr
-Date: \tab 2018-10-30\cr
-Author: \tab BMT, AIMS and QUT (Rebecca Fisher, Glenn Shiell, Rohan Sadler, James McGree)\cr
-Maintainer: \tab Rebecca Fisher\cr
-License: \tab GPL (>= 3)\cr
-LazyLoad: \tab yes\cr
-Depends: \tab XLConnect, doParallel, INLA\cr
-}
-}
 \details{
 epower conducts a power analysis on beyond BACI sampling
 designs through INLA and Monte Carlo simulation.

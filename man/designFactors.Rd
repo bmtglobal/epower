@@ -4,7 +4,7 @@
 \alias{designFactors}
 \title{Data Object Extraction}
 \usage{
-designFactors(toolbox.interface.file = excelInFile)
+designFactors(toolbox.interface.file = excelInFile, read_type = read_package)
 }
 \arguments{
 \item{toolbox.interface.file}{the name of the excel file}
@@ -16,7 +16,7 @@ A list of design specification parameters
 Read excel scenario workbook and convert to R data objects
 }
 \details{
-This function uses XLConnect to read the excel scenario
+This function uses XLConnect or openxlsx to read the excel scenario
 workbook, and then processes that information into
 a series of R objects.
 }
